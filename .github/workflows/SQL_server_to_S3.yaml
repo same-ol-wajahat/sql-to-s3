@@ -1,0 +1,44 @@
+name: SQL to S3 Workflow
+
+on:
+  #schedule:
+   # - cron: '0 0 * * *'  # Run every day at midnight UTC
+  #push:
+   # branches:
+    #  - main
+  workflow_dispatch:  # Enable manual triggering
+    inputs:
+      run-manual:
+        description: 'Run the workflow manually'
+        required: false
+
+jobs:
+  run_sql_and_upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyodbc boto3
+
+      - name: Run SQL query and generate CSV
+        run: |
+          python sql_to_csv.py
+
+      - name: Upload CSV to S3
+        run: |
+          aws_access_key=$AWS_ACCESS_KEY
+          aws_secret_key=$AWS_SECRET_KEY
+          bucket_name=your-bucket-name
+          s3_file_path=path_inside_bucket/output.csv
+          
+          python upload_to_s3.py $aws_access_key $aws_secret_key $bucket_name $s3_file_path
