@@ -32,7 +32,7 @@ jobs:
 
       - name: Run SQL query and generate CSV
         run: |
-          python sql_to_csv.py
+          python queries.py
 
       - name: Upload CSV to S3
         run: |
@@ -41,4 +41,4 @@ jobs:
           bucket_name=your-bucket-name
           s3_file_path=path_inside_bucket/output.csv
           
-          python upload_to_s3.py $aws_access_key $aws_secret_key $bucket_name $s3_file_path
+          python s3.py $aws_access_key $aws_secret_key $bucket_name $s3_file_path
